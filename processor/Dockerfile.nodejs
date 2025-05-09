@@ -1,0 +1,31 @@
+# Dockerfile.nodejs
+FROM node:18-slim
+
+# Create appuser first
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+WORKDIR /app
+
+COPY package.json .
+
+# Install dependencies
+RUN npm install --omit=dev
+
+# Copia el resto (incluye processor.js y demás módulos)
+COPY processor.js .
+
+# Set permissions
+RUN chmod -R 755 . && \
+    chown -R appuser:appuser .
+
+USER appuser
+
+USER appuser
+
+# Exponemos el mismo puerto UDP que definiste en compose
+EXPOSE 12349/udp
+
+CMD ["npm", "start"]
+
+
+      
